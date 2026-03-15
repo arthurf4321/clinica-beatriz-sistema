@@ -121,7 +121,6 @@ button[type="submit"]:active {
     border-radius: 8px;
 }
 
-/* Responsividade */
 @media (max-width: 480px) {
     .Card-login {
         margin: 20px;
