@@ -1,0 +1,155 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    background: #F1F7ED;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image:
+        linear-gradient(#E6DAC8 1px, transparent 1px),
+        linear-gradient(90deg, #E6DAC8 1px, transparent 1px);
+    background-size: 50px 50px;
+    background-position: center center;
+}
+
+.Card-login {
+    background: white;
+    border-radius: 0;
+    padding: 50px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow:
+        20px 20px 0 #243A5E,
+        0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 2px solid #243A5E;
+    position: relative;
+}
+
+.Card-login:hover {
+    transform: translate(-5px, -5px);
+    box-shadow:
+        25px 25px 0 #243A5E,
+        0 15px 35px rgba(36, 58, 94, 0.1);
+}
+
+.Login-title {
+    color: #243A5E;
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    position: relative;
+    padding-left: 20px;
+    border-left: 6px solid #E6DAC8;
+    letter-spacing: -0.5px;
+}
+
+.form-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-inputs div {
+    position: relative;
+}
+
+.form-inputs label {
+    color: #243A5E;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    background: white;
+    padding: 0 8px;
+    z-index: 1;
+}
+
+.form-inputs input {
+    padding: 16px 18px;
+    border: 2px solid #E6DAC8;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    outline: none;
+    background: white;
+    color: #243A5E;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+}
+
+.form-inputs input:focus {
+    border-color: #243A5E;
+    background: #F1F7ED;
+}
+
+.form-inputs input::placeholder {
+    color: #ccc;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+button[type="submit"] {
+    background: #243A5E;
+    color: #F1F7ED;
+    padding: 16px 30px;
+    border: 2px solid #243A5E;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+button[type="submit"]::after {
+    content: '→';
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: right 0.3s ease;
+    font-size: 20px;
+}
+
+button[type="submit"]:hover {
+    background: #1a2b45;
+    border-color: #E6DAC8;
+    color: #E6DAC8;
+}
+
+button[type="submit"]:hover::after {
+    right: 20px;
+}
+
+#esqueciSenha {
+    text-align: right;
+    color: #243A5E;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 8px 0;
+    text-decoration: none;
+    display: inline-block;
+    width: 100%;
+    border-bottom: 2px solid transparent;
+    font-weight: 500;
+}
+
+#esqueciSenha:hover {
+    border-bottom-color: #E6DAC8;
+    color: #1a2b45;
+    padding-right: 5px;
+}
