@@ -2,21 +2,21 @@
 # Java
 # ===============================
 
-# Compiled files
+# Compilados
 *.class
 
-# Logs
-*.log
-
-# Build folders
+# Builds
 target/
 build/
 out/
 
-# Package files
+# Pacotes
 *.jar
 *.war
 *.ear
+
+# Logs
+*.log
 
 # ===============================
 # IntelliJ IDEA
@@ -26,6 +26,9 @@ out/
 *.iml
 *.ipr
 *.iws
+
+# SmartTomcat
+.smarttomcat/
 
 # ===============================
 # Sistema operacional
@@ -54,7 +57,7 @@ Desktop.ini
 *.sqlite
 
 # ===============================
-# Node (caso use JS no front)
+# Node (caso tenha JS no front)
 # ===============================
 
 node_modules/
@@ -67,3 +70,9 @@ node_modules/
 *.rar
 *.tar
 *.gz
+/bin/  
+
+# Eclipse
+.classpath
+.project
+.settings/
