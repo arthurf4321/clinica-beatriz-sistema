@@ -167,7 +167,6 @@ public class UsuarioDAO {
     
     private Usuario mapearResultSetParaUsuario(ResultSet rs) throws SQLException {
         Usuario usuario = new Usuario();
-        usuario.setId(rs.getInt("id"));
         usuario.setNome(rs.getString("nome"));
         usuario.setEmail(rs.getString("email"));
         usuario.setSenha(rs.getString("senha"));
@@ -179,8 +178,7 @@ public class UsuarioDAO {
         usuario.setAtivo(rs.getBoolean("ativo"));
         
         LocalDateTime dataCriacao = rs.getTimestamp("data_criacao") != null 
-            ? rs.getTimestamp("data_criacao").toLocalDateTime() 
-            : null;
+            ? rs.getTimestamp("data_criacao").toLocalDateTime() : null;
         usuario.setDataCriacao(dataCriacao);
         
         return usuario;

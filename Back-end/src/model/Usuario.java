@@ -13,9 +13,9 @@ public class Usuario {
 
     // Enums
     public enum TipoUsuario {
-        ADMIN,
+        ADMINISTRADOR,
         FISIOTERAPEUTA,
-        ATENDENTE
+        RECEPCIONISTA
     }
 
     // Construct
