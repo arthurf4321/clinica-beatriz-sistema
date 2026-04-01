@@ -8,11 +8,11 @@ public class Main {
         try (Connection conn = ConnectionFactory.getConnection()) {
 
             if (conn != null) {
-                System.out.println("✅ Conectado com sucesso ao banco!");
+                System.out.println("Conectado com sucesso ao banco!");
             }
 
         } catch (Exception e) {
-            System.out.println("❌ Erro ao conectar");
+            System.out.println("Erro ao conectar");
             e.printStackTrace();
         }
     }
