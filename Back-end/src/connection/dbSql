@@ -1,185 +1,160 @@
 CREATE DATABASE IF NOT EXISTS clinica_beatriz;
 USE clinica_beatriz;
 
-
 CREATE TABLE planos_saude (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome_convenio VARCHAR(50) NOT NULL,
-    tipo_plano VARCHAR(50),
-    registro_ans VARCHAR(20)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome_convenio VARCHAR(50) NOT NULL,
+    tipo_plano VARCHAR(50),
+    registro_ans VARCHAR(20)
 );
-
 
 CREATE TABLE fisioterapeutas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    cpf VARCHAR(30) NOT NULL,
-    especialidade VARCHAR(100),
-    telefone VARCHAR(20),
-    email VARCHAR(100)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(30) NOT NULL,
+    especialidade VARCHAR(100),
+    telefone VARCHAR(20),
+    email VARCHAR(100)
 );
-
 
 CREATE TABLE pacientes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    cpf VARCHAR(14) UNIQUE,
-    data_nascimento DATE,
-    telefone VARCHAR(20),
-    email VARCHAR(50),
-    endereco VARCHAR(100),
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(14) UNIQUE,
+    data_nascimento DATE,
+    telefone VARCHAR(20),
+    email VARCHAR(50),
+    endereco VARCHAR(100),
 
-    plano_id INT,
-    numero_carteirinha VARCHAR(30),
+    plano_id INT,
+    numero_carteirinha VARCHAR(30),
 
-    medico_assistente VARCHAR(100),
-    contato_medico VARCHAR(50),
+    medico_assistente VARCHAR(100),
+    contato_medico VARCHAR(50),
 
-    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (plano_id) REFERENCES planos_saude(id)
+    FOREIGN KEY (plano_id) REFERENCES planos_saude(id)
 );
-
 
 CREATE TABLE responsaveis (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-
-    paciente_id INT NOT NULL,
-
-    nome_responsavel VARCHAR(100) NOT NULL,
-    cpf_responsavel VARCHAR(14),
-    parentesco VARCHAR(30),
-
-    telefone_contato VARCHAR(20) NOT NULL,
-    email_contato VARCHAR(50),
-
-    FOREIGN KEY (paciente_id) REFERENCES pacientes(id)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    paciente_id INT NOT NULL,
+    nome_responsavel VARCHAR(100) NOT NULL,
+    cpf_responsavel VARCHAR(14),
+    parentesco VARCHAR(30),
+    telefone_contato VARCHAR(20) NOT NULL,
+    email_contato VARCHAR(50),
+    FOREIGN KEY (paciente_id) REFERENCES pacientes(id)
 );
 
-
 CREATE TABLE consentimentos_lgpd (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-
-    paciente_id INT NOT NULL,
-
-    data_aceite DATETIME DEFAULT CURRENT_TIMESTAMP,
-    versao_termo VARCHAR(10),
-
-    FOREIGN KEY (paciente_id) REFERENCES pacientes(id)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    paciente_id INT NOT NULL,
+    data_aceite DATETIME DEFAULT CURRENT_TIMESTAMP,
+    versao_termo VARCHAR(10),
+    FOREIGN KEY (paciente_id) REFERENCES pacientes(id)
 );
 
 CREATE TABLE avaliacoes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    paciente_id INT NOT NULL,
+    fisioterapeuta_id INT NOT NULL,
+    data_avaliacao DATE NOT NULL,
+    queixa_principal TEXT,
+    diagnostico_fisioterapeutico TEXT,
+    objetivos_tratamento TEXT,
+    num_sessoes_contratadas INT DEFAULT 10,
 
-    paciente_id INT NOT NULL,
-    fisioterapeuta_id INT NOT NULL,
+    status_tratamento ENUM(
+        'em_andamento',
+        'concluido',
+        'cancelado'
+    ) DEFAULT 'em_andamento',
 
-    data_avaliacao DATE NOT NULL,
-
-    queixa_principal TEXT,
-    diagnostico_fisioterapeutico TEXT,
-    objetivos_tratamento TEXT,
-
-    num_sessoes_contratadas INT DEFAULT 10,
-
-    status_tratamento ENUM(
-        'em_andamento',
-        'concluido',
-        'cancelado'
-    ) DEFAULT 'em_andamento',
-
-    FOREIGN KEY (paciente_id) REFERENCES pacientes(id),
-    FOREIGN KEY (fisioterapeuta_id) REFERENCES fisioterapeutas(id)
+    FOREIGN KEY (paciente_id) REFERENCES pacientes(id),
+    FOREIGN KEY (fisioterapeuta_id) REFERENCES fisioterapeutas(id)
 );
-
 
 CREATE TABLE sessoes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    avaliacao_id INT NOT NULL,
+    fisioterapeuta_id INT NOT NULL,
+    data_consulta DATE,
+    hora_consulta TIME,
 
-    avaliacao_id INT NOT NULL,
+    status ENUM(
+        'solicitada',
+        'confirmada',
+        'agendada',
+        'realizada',
+        'cancelada'
+    ) DEFAULT 'solicitada',
 
-    fisioterapeuta_id INT NOT NULL,
+    observacoes TEXT,
 
-    data_consulta DATE,
-    hora_consulta TIME,
-
-    status ENUM(
-        'solicitada',
-        'confirmada',
-        'agendada',
-        'realizada',
-        'cancelada'
-    ) DEFAULT 'solicitada',
-
-    observacoes TEXT,
-
-    FOREIGN KEY (avaliacao_id) REFERENCES avaliacoes(id),
-    FOREIGN KEY (fisioterapeuta_id) REFERENCES fisioterapeutas(id)
+    FOREIGN KEY (avaliacao_id) REFERENCES avaliacoes(id),
+    FOREIGN KEY (fisioterapeuta_id) REFERENCES fisioterapeutas(id)
 );
-
 
 CREATE TABLE pagamentos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    avaliacao_id INT NOT NULL,
+    valor DECIMAL(10,2),
 
-    avaliacao_id INT NOT NULL,
+    forma_pagamento ENUM(
+        'dinheiro',
+        'pix',
+        'cartao',
+        'transferencia'
+    ),
 
-    valor DECIMAL(10,2),
+    status ENUM(
+        'pendente',
+        'pago',
+        'cancelado'
+    ) DEFAULT 'pendente',
 
-    forma_pagamento ENUM(
-        'dinheiro',
-        'pix',
-        'cartao',
-        'transferencia'
-    ),
+    data_pagamento DATE,
 
-    status ENUM(
-        'pendente',
-        'pago',
-        'cancelado'
-    ) DEFAULT 'pendente',
-
-    data_pagamento DATE,
-
-    FOREIGN KEY (avaliacao_id) REFERENCES avaliacoes(id)
+    FOREIGN KEY (avaliacao_id) REFERENCES avaliacoes(id)
 );
-
 
 CREATE TABLE evolucoes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-
-    sessao_id INT NOT NULL,
-
-    descricao_conduta TEXT,
-    relato_paciente TEXT,
-    observacoes_internas TEXT,
-
-    FOREIGN KEY (sessao_id) REFERENCES sessoes(id)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sessao_id INT NOT NULL,
+    descricao_conduta TEXT,
+    relato_paciente TEXT,
+    observacoes_internas TEXT,
+    FOREIGN KEY (sessao_id) REFERENCES sessoes(id)
 );
-
 
 CREATE TABLE usuarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    senha VARCHAR(255) NOT NULL,
 
-    nome VARCHAR(100) NOT NULL,
+    tipo_usuario ENUM(
+        'administrador',
+        'recepcionista',
+        'fisioterapeuta'
+    ) DEFAULT 'recepcionista',
 
-    email VARCHAR(100) UNIQUE NOT NULL,
+    fisioterapeuta_id INT,
+    ativo BOOLEAN DEFAULT TRUE,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    senha VARCHAR(255) NOT NULL,
-
-    tipo_usuario ENUM(
-        'administrador',
-        'recepcionista',
-        'fisioterapeuta'
-    ) DEFAULT 'recepcionista',
-
-    fisioterapeuta_id INT,
-
-    ativo BOOLEAN DEFAULT TRUE,
-
-    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (fisioterapeuta_id) REFERENCES fisioterapeutas(id)
+    FOREIGN KEY (fisioterapeuta_id) REFERENCES fisioterapeutas(id)
 );
 
+-- Índice para agenda
 CREATE INDEX idx_agenda
 ON sessoes (data_consulta, hora_consulta);
+
+-- 👇 USUÁRIO ADMIN PADRÃO (SEM DUPLICAR)
+INSERT INTO usuarios (nome, email, senha, tipo_usuario, ativo)
+SELECT 'Admin', 'admin@admin.com', '123456', 'administrador', true
+WHERE NOT EXISTS (
+    SELECT 1 FROM usuarios WHERE email = 'admin@admin.com'
+);

@@ -74,3 +74,31 @@ Evolução Clínica
 ## Equipe de Desenvolvimento
 
 Projeto desenvolvido por uma equipe de três desenvolvedores com foco em aprendizado colaborativo e aplicação prática de conceitos de engenharia de software.
+
+### 👥 Contribuidores
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/arthurf4321">
+        <img src="https://github.com/arthurf4321.png" width="100px;" alt=""/>
+        <br />
+        <sub><b>Arthur Felipe</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Parlinxdt">
+        <img src="https://github.com/Parlinxdt.png" width="100px;" alt=""/>
+        <br />
+        <sub><b>Paulo Vitor</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/marcosalves43">
+        <img src="https://github.com/marcosalves43.png" width="100px;" alt=""/>
+        <br />
+        <sub><b>Marcos Alvez</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
