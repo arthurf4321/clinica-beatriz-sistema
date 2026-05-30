@@ -220,6 +220,9 @@ nav a:hover {
   resize: none;
 }
 
+.location {
+  padding: 60px 0;
+}
 
 @media (max-width: 768px) {
   .nav {
