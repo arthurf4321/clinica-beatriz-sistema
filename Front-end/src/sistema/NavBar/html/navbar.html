@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NavBar - Clínica Beatriz</title>
+    <link rel="stylesheet" href="../style/style.css
+">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="#" class="nav-brand">
+            <span class="brand-icon">⚕️</span>
+            <span class="brand-text">Clínica Beatriz</span>
+        </a>
+
+        <button class="menu-toggle" id="mobileMenuBtn" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <ul class="nav-menu" id="navMenu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <span class="nav-icon"></span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-icon"></span>
+                    <span>Clientes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-icon"></span>
+                    <span>Fisioterapeutas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-icon"></span>
+                    <span>Agenda</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-icon"></span>
+                    <span>Relatórios</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="user-area">
+            <div class="user-greeting">Olá,</div>
+            <div class="user-name">Dra. Beatriz</div>
+            <div class="avatar">BM</div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    // Fechar menu ao clicar em qualquer link
+    const allLinks = document.querySelectorAll('.nav-link');
+    allLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                const spans = menuBtn?.querySelectorAll('span');
+                spans?.forEach((span) => {
+                    span.style.transform = 'none';
+                    span.style.opacity = '1';
+                });
+            }
+            allLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        });
+    });
+</script>
+</body>
+</html>
