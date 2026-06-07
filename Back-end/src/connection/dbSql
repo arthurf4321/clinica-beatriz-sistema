@@ -148,13 +148,20 @@ CREATE TABLE usuarios (
     FOREIGN KEY (fisioterapeuta_id) REFERENCES fisioterapeutas(id)
 );
 
--- Índice para agenda
-CREATE INDEX idx_agenda
-ON sessoes (data_consulta, hora_consulta);
-
--- 👇 USUÁRIO ADMIN PADRÃO (SEM DUPLICAR)
 INSERT INTO usuarios (nome, email, senha, tipo_usuario, ativo)
-SELECT 'Admin', 'admin@admin.com', '123456', 'administrador', true
+SELECT 'Arthur', 'arthur@clinicabeatriz.com', '$2a$10$Tjdn2lEGYnIQG.B1ELZoGehq2v4evduTLVgzjFIAnhuok4P4ls3jC', 'administrador', true
 WHERE NOT EXISTS (
-    SELECT 1 FROM usuarios WHERE email = 'admin@admin.com'
+    SELECT 1 FROM usuarios WHERE email = 'arthur@clinicabeatriz.com'
+);
+
+INSERT INTO usuarios (nome, email, senha, tipo_usuario, ativo)
+SELECT 'Marcos', 'marcos@clinicabeatriz.com', '$2a$10$a77n4htWe6X0ncsMj/Em8uDJ24OdWMbHyqGnSJ9YbTdCLkxs7EhhO', 'administrador', true
+WHERE NOT EXISTS (
+    SELECT 1 FROM usuarios WHERE email = 'marcos@clinicabeatriz.com'
+);
+
+INSERT INTO usuarios (nome, email, senha, tipo_usuario, ativo)
+SELECT 'Paulo', 'paulo@clinicabeatriz.com', '$2a$10$7ZRLVhI9oHFbT0lsho3kYuD756Q.RMlQW8BvgonyNpZepiTgBgneW', 'administrador', true
+WHERE NOT EXISTS (
+    SELECT 1 FROM usuarios WHERE email = 'paulo@clinicabeatriz.com'
 );
