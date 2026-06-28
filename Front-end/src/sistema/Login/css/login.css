@@ -56,22 +56,19 @@ body {
     gap: 25px;
 }
 
-.form-inputs div {
+.field {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.form-inputs label {
+.field label {
     color: #243A5E;
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    position: absolute;
-    top: -10px;
-    left: 15px;
-    background: white;
-    padding: 0 8px;
-    z-index: 1;
 }
 
 .form-inputs input {
