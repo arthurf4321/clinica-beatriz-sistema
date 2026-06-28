@@ -10,8 +10,6 @@ async function buscarLocalizacao() {
 
     if (data.length > 0) {
 
-    
-
         const latitude = data[0].lat;
         const longitude = data[0].lon;
 
