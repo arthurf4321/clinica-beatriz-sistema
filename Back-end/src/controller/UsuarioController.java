@@ -18,7 +18,11 @@ public class UsuarioController {
             usuario.setNome(nome);
             usuario.setEmail(email);
             usuario.setSenha(senha);
-            usuario.setTipoUsuario(Usuario.TipoUsuario.valueOf(tipoUsuario));
+            usuario.setTipoUsuario(
+                    Usuario.TipoUsuario.valueOf(
+                            tipoUsuario.toUpperCase()
+                    )
+            );
             usuario.setAtivo(true);
             
             usuarioService.criarUsuario(usuario);
@@ -53,10 +57,16 @@ public class UsuarioController {
     public void atualizarUsuario(int id, String nome, String email, String senha, String tipoUsuario) {
         try {
             Usuario usuario = new Usuario();
+            usuario.setAtivo(true);
+            usuario.setId(id);
             usuario.setNome(nome);
             usuario.setEmail(email);
             usuario.setSenha(senha);
-            usuario.setTipoUsuario(Usuario.TipoUsuario.valueOf(tipoUsuario));
+            usuario.setTipoUsuario(
+                    Usuario.TipoUsuario.valueOf(
+                            tipoUsuario.toUpperCase()
+                    )
+            );
             
             usuarioService.atualizarUsuario(usuario);
             

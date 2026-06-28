@@ -27,6 +27,11 @@ public class UsuarioService {
             System.out.println("Erro: Senha é obrigatória");
             return;
         }
+
+        if(usuarioDAO.buscarUsuarioPorEmail(usuario.getEmail()) != null){
+            System.out.println("Email já cadastrado.");
+            return;
+        }
         
         usuarioDAO.criarUsuario(usuario);
         System.out.println("Usuário criado com sucesso!");
