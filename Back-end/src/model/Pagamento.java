@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 public class Pagamento {
     private int id;
     private int avaliacaoId;
+    private int recepcionistaId;
     private double valor;
     private FormaPagamento formaPagamento;
     private StatusPagamento statusPagamento;
@@ -25,6 +26,7 @@ public class Pagamento {
 
     // Gets and Sets
     public int getAvaliacaoId() { return avaliacaoId; }
+    private int getrecepcionistaId() { return recepcionistaId; }
     public int getId() { return  id; }
     public void setValor( double valor ) { this.valor = valor;}
     public double getValor() { return valor; }
