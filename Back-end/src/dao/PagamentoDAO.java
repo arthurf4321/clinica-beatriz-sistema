@@ -2,12 +2,15 @@ package dao;
 
 import connection.ConnectionFactory;
 import model.Pagamento;
+import model.Usuario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PagamentoDAO {
 
@@ -34,6 +37,61 @@ public class PagamentoDAO {
         } finally {
             closeResources(conn, stmt, null);
         }
+    }
+
+    public List<Pagamento> listarPagamentos() {
+        String sql = "SELECT * FROM pagamentos ORDER BY id";
+        List<Pagamento> pagamentos = new ArrayList<>();
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = ConnectionFactory.getConnection();
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                pagamentos.add(mapearResultSetParaPagamento(rs));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar pagamentos: " + e.getMessage(), e);
+
+        } finally {
+            closeResources(conn, stmt, rs);
+        }
+
+        return pagamentos;
+    }
+
+
+    private Pagamento mapearResultSetParaPagamento(ResultSet rs) throws SQLException {
+        Pagamento pagamento = new Pagamento();
+
+        pagamento.setId(rs.getInt("id"));
+        pagamento.setValor(rs.getDouble("valor"));
+
+        pagamento.setFormaPagamento(
+                Pagamento.FormaPagamento.valueOf(
+                        rs.getString("forma_pagamento").toUpperCase()
+                )
+        );
+
+        pagamento.setStatusPagamento(
+                Pagamento.StatusPagamento.valueOf(
+                        rs.getString("status").toUpperCase()
+                )
+        );
+
+        pagamento.setDataPagamento(
+                rs.getTimestamp("data_pagamento") != null
+                        ? rs.getTimestamp("data_pagamento").toLocalDateTime()
+                        : null
+        );
+
+        return pagamento;
     }
 
     private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
