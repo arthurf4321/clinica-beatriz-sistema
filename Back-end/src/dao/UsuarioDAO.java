@@ -12,6 +12,35 @@ import connection.ConnectionFactory;
 
 public class UsuarioDAO {
 
+    public Usuario validarLogin(String email, String senha) {
+        String sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ? AND ativo = true";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = ConnectionFactory.getConnection();
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, email);
+            stmt.setString(2, senha);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return mapearResultSetParaUsuario(rs);
+            }
+
+            return null;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao validar login: " + e.getMessage(), e);
+        } finally {
+            closeResources(conn, stmt, rs);
+        }
+    }
+
+
+
     // Methods
     public void criarUsuario(Usuario usuario) {
         String sql = "INSERT INTO usuarios (nome, email, senha, tipo_usuario, fisioterapeuta_id, ativo, data_criacao) VALUES (?,?,?,?,?,?,?)";
