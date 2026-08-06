@@ -13,6 +13,7 @@ bin/
 
 # Pacotes
 *.jar
+!src/main/webapp/META-INF/lib/*.jar
 *.war
 *.ear
 
