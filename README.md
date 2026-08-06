@@ -87,8 +87,8 @@ Projeto desenvolvido por uma equipe de três desenvolvedores com foco em aprendi
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/Parlinxdt">
-        <img src="https://github.com/Parlinxdt.png" width="100px;" alt=""/>
+      <a href="https://github.com/Paulo9260">
+        <img src="https://github.com/Paulo9260.png" width="100px;" alt=""/>
         <br />
         <sub><b>Paulo Vitor</b></sub>
       </a>
