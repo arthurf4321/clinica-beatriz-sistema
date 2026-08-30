@@ -14,7 +14,7 @@ public class PagamentoDAO {
 
     public void criarPagamento(Pagamento pagamento) {
 
-        String sql = "INSERT INTO pagamentos (valor, forma_pagamento, status, data_pagamento, recepcionista_id) Values (?,?,?,?)";
+        String sql = "INSERT INTO pagamentos (valor, forma_pagamento, status, data_pagamento, recepcionista_id, avaliacao_id) Values (?,?,?,?,?,?)";
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -28,6 +28,7 @@ public class PagamentoDAO {
             stmt.setString(3, pagamento.getStatusPagamento().name());
             stmt.setTimestamp(4, java.sql.Timestamp.valueOf(pagamento.getDataPagamento()));
             stmt.setInt(5, pagamento.getRecepcionistaId());
+            stmt.setInt(6, pagamento.getAvaliacaoId());
 
             stmt.executeUpdate();
         } catch (Exception e) {
@@ -90,6 +91,56 @@ public class PagamentoDAO {
         );
 
         return pagamento;
+    }
+
+    public Pagamento buscarPagamentoPorId(int id) {
+        String sql = "SELECT * FROM pagamentos WHERE id = ?";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try{
+            conn = ConnectionFactory.getConnection();
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return mapearResultSetParaPagamento(rs);
+            }
+
+            return null;
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar Pagamento por ID: " + e.getMessage(), e);
+        } finally {
+            closeResources(conn, stmt, rs);
+        }
+    }
+
+    public void atualizarStatusPagamento(int id, String status) {
+        String sql = "UPDATE pagamentos SET status = ? WHERE id = ?";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = ConnectionFactory.getConnection();
+            stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, status);
+            stmt.setInt(2, id);
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(
+                    "Erro ao atualizar status do pagamento: " + e.getMessage(), e
+            );
+
+        } finally {
+            closeResources(conn, stmt, null);
+        }
     }
 
     private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {

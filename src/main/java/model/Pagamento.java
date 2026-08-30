@@ -12,9 +12,9 @@ public class Pagamento {
 
     // Enums
     public enum StatusPagamento {
-        pendente,
-        pago,
-        cancelado
+        PENDENTE,
+        PAGO,
+        CANCELADO
     }
 
     public enum FormaPagamento {
