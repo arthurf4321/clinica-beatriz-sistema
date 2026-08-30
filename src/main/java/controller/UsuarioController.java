@@ -2,80 +2,129 @@ package controller;
 
 import model.Usuario;
 import service.UsuarioService;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
-public class UsuarioController {
-    
-    private UsuarioService usuarioService;
-    
-    public UsuarioController() {
-        this.usuarioService = new UsuarioService();
+@WebServlet("/usuarios")
+public class UsuarioController extends HttpServlet {
+
+    private UsuarioService usuarioService = new UsuarioService();
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
+        String idParam = request.getParameter("id");
+
+        if (idParam != null && !idParam.isEmpty()) {
+            int id = Integer.parseInt(idParam);
+            Usuario usuario = usuarioService.buscarUsuarioPorId(id);
+
+            if (usuario == null) {
+                out.println("Usuário não encontrado");
+                return;
+            }
+
+            out.println(usuario.getId() + " - " + usuario.getNome() + " - "
+                    + usuario.getEmail() + " - " + usuario.getTipoUsuario());
+
+        } else {
+            List<Usuario> usuarios = usuarioService.listarUsuarios();
+
+            if (usuarios.isEmpty()) {
+                out.println("Nenhum usuário encontrado.");
+                return;
+            }
+
+            for (Usuario usuario : usuarios) {
+                out.println(usuario.getId() + " - " + usuario.getNome() + " - "
+                        + usuario.getEmail() + " - " + usuario.getTipoUsuario());
+            }
+        }
     }
-    
-    public void cadastrarUsuario(String nome, String email, String senha, String tipoUsuario) {
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
         try {
             Usuario usuario = new Usuario();
-            usuario.setNome(nome);
-            usuario.setEmail(email);
-            usuario.setSenha(senha);
+            usuario.setNome(request.getParameter("nome"));
+            usuario.setEmail(request.getParameter("email"));
+            usuario.setSenha(request.getParameter("senha"));
             usuario.setTipoUsuario(
                     Usuario.TipoUsuario.valueOf(
-                            tipoUsuario.toUpperCase()
+                            request.getParameter("tipoUsuario").toUpperCase()
                     )
             );
             usuario.setAtivo(true);
-            
+
             usuarioService.criarUsuario(usuario);
-            
+
+            out.println("Usuário cadastrado com sucesso");
+
         } catch (Exception e) {
-            System.out.println("Erro: " + e.getMessage());
+            out.println("Erro: " + e.getMessage());
         }
     }
-    
-    public void listarTodosUsuarios() {
-        List<Usuario> usuarios = usuarioService.listarUsuarios();
-        
-        if (usuarios.isEmpty()) {
-            System.out.println("Nenhum usuário encontrado.");
-            return;
-        }
-        
-        System.out.println("=== USUÁRIOS CADASTRADOS ===");
-        for (Usuario usuario : usuarios) {
-            System.out.println("ID: " + usuario.getId());
-            System.out.println("Nome: " + usuario.getNome());
-            System.out.println("Email: " + usuario.getEmail());
-            System.out.println("Tipo: " + usuario.getTipoUsuario());
-            System.out.println("---------------------");
-        }
-    }
-    
-    public Usuario buscarUsuario(int id) {
-        return usuarioService.buscarUsuarioPorId(id);
-    }
-    
-    public void atualizarUsuario(int id, String nome, String email, String senha, String tipoUsuario) {
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
         try {
             Usuario usuario = new Usuario();
-            usuario.setAtivo(true);
-            usuario.setId(id);
-            usuario.setNome(nome);
-            usuario.setEmail(email);
-            usuario.setSenha(senha);
+            usuario.setId(Integer.parseInt(request.getParameter("id")));
+            usuario.setNome(request.getParameter("nome"));
+            usuario.setEmail(request.getParameter("email"));
+            usuario.setSenha(request.getParameter("senha"));
             usuario.setTipoUsuario(
                     Usuario.TipoUsuario.valueOf(
-                            tipoUsuario.toUpperCase()
+                            request.getParameter("tipoUsuario").toUpperCase()
                     )
             );
-            
+            usuario.setAtivo(true);
+
             usuarioService.atualizarUsuario(usuario);
-            
+
+            out.println("Usuário atualizado com sucesso");
+
         } catch (Exception e) {
-            System.out.println("Erro: " + e.getMessage());
+            out.println("Erro: " + e.getMessage());
         }
     }
-    
-    public void removerUsuario(int id) {
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
+        int id = Integer.parseInt(request.getParameter("id"));
         usuarioService.deletarUsuario(id);
+
+        out.println("Usuário removido com sucesso");
     }
 }

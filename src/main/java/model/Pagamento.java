@@ -26,7 +26,9 @@ public class Pagamento {
 
     // Gets and Sets
     public int getAvaliacaoId() { return avaliacaoId; }
+    public void setAvaliacaoId( int avaliacaoId ) { this.avaliacaoId = avaliacaoId; }
     public int getRecepcionistaId() { return recepcionistaId; }
+    public void setRecepcionistaId( int recepcionistaId ) { this.recepcionistaId = recepcionistaId; }
     public int getId() { return  id; }
     public void setId( int id ) { this.id = id; }
     public void setValor( double valor ) { this.valor = valor;}
