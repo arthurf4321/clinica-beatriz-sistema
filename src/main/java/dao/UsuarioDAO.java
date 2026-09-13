@@ -9,11 +9,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import connection.ConnectionFactory;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UsuarioDAO {
 
     public Usuario validarLogin(String email, String senha) {
-        String sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ? AND ativo = true";
+        String sql = "SELECT * FROM usuarios WHERE email = ? AND ativo = true";
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -22,23 +23,29 @@ public class UsuarioDAO {
         try {
             conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement(sql);
+
             stmt.setString(1, email);
-            stmt.setString(2, senha);
+
             rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return mapearResultSetParaUsuario(rs);
+
+                String senhaCriptografada = rs.getString("senha");
+
+                if (BCrypt.checkpw(senha, senhaCriptografada)) {
+                    return mapearResultSetParaUsuario(rs);
+                }
             }
 
             return null;
 
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao validar login: " + e.getMessage(), e);
+
         } finally {
             closeResources(conn, stmt, rs);
         }
     }
-
 
 
     // Methods
