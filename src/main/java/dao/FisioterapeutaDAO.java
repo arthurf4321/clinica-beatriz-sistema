@@ -81,7 +81,7 @@ public class FisioterapeutaDAO {
 
 
 	    public Fisioterapeuta buscarFisioterapeutasPorId(int id) {
-	        String sql = "SELECT * FROM fisioterapeutas WHERE id = ?";
+	        String sql = "SELECT * FROM fisioterapeutas WHERE id = ? AND ativo = true";
 
 	        Connection conn = null;
 	        PreparedStatement stmt = null;
@@ -107,7 +107,7 @@ public class FisioterapeutaDAO {
 	    }
 
 	    public Fisioterapeuta buscarPorEmail(String email) {
-	        String sql = "SELECT * FROM fisioterapeutas WHERE email = ?";
+	        String sql = "SELECT * FROM fisioterapeutas WHERE email = ? AND ativo = true";
 
 	        Connection conn = null;
 	        PreparedStatement stmt = null;

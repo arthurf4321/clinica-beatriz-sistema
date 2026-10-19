@@ -16,138 +16,187 @@ import java.util.List;
 @WebServlet("/fisioterapeutas")
 public class FisioterapeutaController extends HttpServlet {
 
-	private FisioterapeutaService fisioterapeutaService =
-            new FisioterapeutaService(); 	
+    private final FisioterapeutaService fisioterapeutaService = new FisioterapeutaService();
 
+    private String formatar(Fisioterapeuta f) {
+        return f.getId() + " - " + f.getNome() + " - " + f.getCpf() + " - "
+                + f.getTelefone() + " - " + f.getEmail() + " - " + f.getTipoFisioterapeuta();
+    }
 
+    private Fisioterapeuta.Especialidade parseEspecialidade(String valor) {
+        if (valor == null || valor.trim().isEmpty()) {
+            throw new IllegalArgumentException("Especialidade é obrigatória.");
+        }
+        try {
+            return Fisioterapeuta.Especialidade.valueOf(valor.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Especialidade inválida.");
+        }
+    }
 
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-	        throws ServletException, IOException {
+    private int parseId(String idParam) {
+        if (idParam == null || idParam.trim().isEmpty()) {
+            throw new IllegalArgumentException("ID é obrigatório.");
+        }
+        try {
+            return Integer.parseInt(idParam.trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("ID inválido.");
+        }
+    }
 
-	    response.setContentType("text/plain");
-	    response.setCharacterEncoding("UTF-8");
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-	    PrintWriter out = response.getWriter();
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
 
-	    String idParam = request.getParameter("id");
+        String idParam = request.getParameter("id");
 
-	    if (idParam != null && !idParam.isEmpty()) {
+        try {
+            if (idParam != null && !idParam.trim().isEmpty()) {
 
-	        int id = Integer.parseInt(idParam);
+                Fisioterapeuta f = fisioterapeutaService.buscarFisioterapeutaPorId(parseId(idParam));
 
-	        Fisioterapeuta fisioterapeuta =
-	                fisioterapeutaService.buscarFisioterapeutaPorId(id);
+                if (f == null) {
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    out.println("Fisioterapeuta não encontrado");
+                    return;
+                }
+                out.println(formatar(f));
 
-	        if (fisioterapeuta == null) {
-	            out.println("Fisioterapeuta não encontrado");
-	            return;
-	        }
+            } else {
+                List<Fisioterapeuta> lista = fisioterapeutaService.listarFisioterapeutas();
 
-	        out.println(
-	            fisioterapeuta.getId() + " - " +
-	            fisioterapeuta.getNome() + " - " +
-	            fisioterapeuta.getCpf() + " - " +
-	            fisioterapeuta.getTelefone() + " - " +
-	            fisioterapeuta.getEmail() + " - " +
-	            fisioterapeuta.getTipoFisioterapeuta()
-	        );
+                if (lista.isEmpty()) {
+                    out.println("Nenhum fisioterapeuta encontrado");
+                    return;
+                }
+                for (Fisioterapeuta f : lista) {
+                    out.println(formatar(f));
+                }
+            }
 
-	    } else {
+        } catch (IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.println("Erro: " + e.getMessage());
 
-	        List<Fisioterapeuta> fisioterapeutas =
-	                fisioterapeutaService.listarFisioterapeutas();
+        } catch (RuntimeException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            getServletContext().log("Erro ao consultar fisioterapeutas", e);
+            out.println("Erro interno ao consultar. Confira o console do Tomcat.");
+        }
+    }
 
-	        if (fisioterapeutas.isEmpty()) {
-	            out.println("Nenhum fisioterapeuta encontrado");
-	            return;
-	        }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-	        for (Fisioterapeuta f : fisioterapeutas) {
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
 
-	            out.println(
-	                f.getId() + " - " +
-	                f.getNome() + " - " +
-	                f.getCpf() + " - " +
-	                f.getTelefone() + " - " +
-	                f.getEmail() + " - " +
-	                f.getTipoFisioterapeuta()
-	            );
-	        }
-	    }
-	}
-	    @Override
-	    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-	            throws ServletException, IOException {
+        try {
+            Fisioterapeuta f = new Fisioterapeuta();
+            f.setNome(request.getParameter("nome"));
+            f.setCpf(request.getParameter("cpf"));
+            f.setTelefone(request.getParameter("telefone"));
+            f.setEmail(request.getParameter("email"));
+            f.setTipoFisioterapeuta(parseEspecialidade(request.getParameter("especialidade")));
 
-	        response.setContentType("text/plain");
-	        response.setCharacterEncoding("UTF-8");
-	        PrintWriter out = response.getWriter();
+            fisioterapeutaService.criarFisioterapeuta(f);
 
-	        Fisioterapeuta fisioterapeuta = new Fisioterapeuta();
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            out.println("Fisioterapeuta criado com sucesso!");
 
-	        fisioterapeuta.setNome(request.getParameter("nome"));
-	        fisioterapeuta.setCpf(request.getParameter("cpf"));
-	        fisioterapeuta.setTelefone(request.getParameter("telefone"));
-	        fisioterapeuta.setEmail(request.getParameter("email"));
+        } catch (IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.println("Erro: " + e.getMessage());
 
-	        fisioterapeuta.setTipoFisioterapeuta(
-	                Fisioterapeuta.Especialidade.valueOf(
-	                        request.getParameter("especialidade").toUpperCase()
-	                )
-	        );
+        } catch (RuntimeException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            getServletContext().log("Erro ao cadastrar fisioterapeuta", e);
+            out.println("Erro interno ao cadastrar. Confira o console do Tomcat.");
+        }
+    }
 
-	        fisioterapeutaService.criarFisioterapeuta(fisioterapeuta);
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-	        out.println("Requisição de criação processada");
-	    }
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
 
-	    @Override
-	    protected void doPut(HttpServletRequest request, HttpServletResponse response)
-	            throws ServletException, IOException {
+        try {
+            int id = parseId(request.getParameter("id"));
 
-	        response.setContentType("text/plain");
-	        response.setCharacterEncoding("UTF-8");
-	        PrintWriter out = response.getWriter();
+            Fisioterapeuta f = fisioterapeutaService.buscarFisioterapeutaPorId(id);
 
-	        int id = Integer.parseInt(request.getParameter("id"));
+            if (f == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                out.println("Fisioterapeuta não encontrado");
+                return;
+            }
 
-	        Fisioterapeuta fisioterapeuta =
-	                fisioterapeutaService.buscarFisioterapeutaPorId(id);
+            String nome = request.getParameter("nome");
+            String cpf = request.getParameter("cpf");
+            String telefone = request.getParameter("telefone");
+            String email = request.getParameter("email");
+            String especialidade = request.getParameter("especialidade");
 
-	        if (fisioterapeuta == null) {
-	            out.println("Fisioterapeuta não encontrado");
-	            return;
-	        }
+            if (nome != null) f.setNome(nome);
+            if (cpf != null) f.setCpf(cpf);
+            if (telefone != null) f.setTelefone(telefone);
+            if (email != null) f.setEmail(email);
+            if (especialidade != null) f.setTipoFisioterapeuta(parseEspecialidade(especialidade));
 
-	        fisioterapeuta.setNome(request.getParameter("nome"));
-	        fisioterapeuta.setCpf(request.getParameter("cpf"));
-	        fisioterapeuta.setTelefone(request.getParameter("telefone"));
-	        fisioterapeuta.setEmail(request.getParameter("email"));
+            fisioterapeutaService.atualizarFisioterapeuta(f);
 
-	        fisioterapeuta.setTipoFisioterapeuta(
-	                Fisioterapeuta.Especialidade.valueOf(
-	                        request.getParameter("especialidade").toUpperCase()
-	                )
-	        );
+            out.println("Fisioterapeuta atualizado com sucesso!");
 
-	        fisioterapeutaService.atualizarFisioterapeuta(fisioterapeuta);
+        } catch (IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.println("Erro: " + e.getMessage());
 
-	        out.println("Requisição de atualização processada");
-	    }
+        } catch (RuntimeException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            getServletContext().log("Erro ao atualizar fisioterapeuta", e);
+            out.println("Erro interno ao atualizar. Confira o console do Tomcat.");
+        }
+    }
 
-	    @Override
-	    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-	            throws ServletException, IOException {
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-	        response.setContentType("text/plain");
-	        response.setCharacterEncoding("UTF-8");
-	        PrintWriter out = response.getWriter();
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
 
-	        int id = Integer.parseInt(request.getParameter("id"));
+        try {
+            int id = parseId(request.getParameter("id"));
 
-	        fisioterapeutaService.deletarFisioterapeuta(id);
+            if (fisioterapeutaService.buscarFisioterapeutaPorId(id) == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                out.println("Fisioterapeuta não encontrado");
+                return;
+            }
 
-	        out.println("Requisição de exclusão processada");
-	    }
-	}
+            fisioterapeutaService.deletarFisioterapeuta(id);
+
+            out.println("Fisioterapeuta excluído com sucesso!");
+
+        } catch (IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.println("Erro: " + e.getMessage());
+
+        } catch (RuntimeException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            getServletContext().log("Erro ao excluir fisioterapeuta", e);
+            out.println("Erro interno ao excluir. Confira o console do Tomcat.");
+        }
+    }
+}
